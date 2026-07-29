@@ -1,9 +1,9 @@
 import { Route } from "react-router-dom";
 
-import EmployeeList from "../pages/employees/EmployeeList";
-import AddEmployee from "../pages/employees/AddEmployee";
-import EditEmployee from "../pages/employees/EditEmployee";
-import EmployeeDetails from "../pages/employees/EmployeeDetails";
+import EmployeeList from "../pages/employee/EmployeeList";
+import AddEmployee from "../pages/employee/AddEmployee";
+import EditEmployee from "../pages/employee/EditEmployee";
+import EmployeeDetails from "../pages/employee/EmployeeDetails";
 
 const EmployeeRoutes = () => (
     <>

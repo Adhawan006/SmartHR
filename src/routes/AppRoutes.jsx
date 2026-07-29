@@ -1,21 +1,53 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import DashboardLayout from "../layouts/DashboardLayout";
-import EmployeeRoutes from "./EmployeeRoutes";
+import Login from "../pages/Login";
+import Dashboard from "../pages/Dashboard";
+
+import Employees from "../pages/employee/Employees";
+import AddEmployee from "../pages/employee/AddEmployee";
+import EditEmployee from "../pages//employee/EditEmployee";
+import EmployeeDetails from "../pages/employee/EmployeeDetails";
+
+import AdminRoute from "../components/AdminRoute";
 
 const AppRoutes = () => {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Login />} />
 
-                {/* Dashboard Layout */}
-                <Route path="/" element={<DashboardLayout />}>
+                <Route
+                    path="/dashboard"
+                    element={<Dashboard />}
+                />
 
-                    {/* Employee Routes */}
-                    {EmployeeRoutes()}
+                <Route
+                    path="/employees"
+                    element={<Employees />}
+                />
 
-                </Route>
+                <Route
+                    path="/add-employee"
+                    element={
+                        <AdminRoute>
+                            <AddEmployee />
+                        </AdminRoute>
+                    }
+                />
 
+                <Route
+                    path="/edit-employee/:id"
+                    element={
+                        <AdminRoute>
+                            <EditEmployee />
+                        </AdminRoute>
+                    }
+                />
+
+                <Route
+                    path="/employee/:id"
+                    element={<EmployeeDetails />}
+                />
             </Routes>
         </BrowserRouter>
     );
