@@ -1,0 +1,241 @@
+/* BALANCE GRID */
+
+.balance-grid,
+.balance-detail-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 22px;
+
+}
+
+
+.balance-detail-grid {
+
+    margin-top: 24px;
+
+}
+
+
+
+/* CARDS */
+
+.balance-card,
+.content-card {
+
+    background: #1e293b;
+
+    border: 1px solid #334155;
+
+    border-radius: 14px;
+
+}
+
+
+
+.balance-card {
+
+    padding: 20px;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+}
+
+
+
+/* BALANCE CARD HEADER */
+
+.balance-card-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    color: #94a3b8;
+
+    font-size: .86rem;
+
+    font-weight: 600;
+
+}
+
+
+
+.balance-icon {
+
+    color: #60a5fa;
+
+    font-size: 1.2rem;
+
+}
+
+
+
+/* NUMBER */
+
+.balance-card strong {
+
+    display: block;
+
+    font:
+
+        700 2rem Outfit,
+        sans-serif;
+
+    letter-spacing: -.05em;
+
+    margin: 22px 0 15px;
+
+    color: #f8fafc;
+
+}
+
+
+
+.balance-card small {
+
+    color: #94a3b8;
+
+    font:
+
+        500 .83rem "DM Sans",
+        sans-serif;
+
+    letter-spacing: 0;
+
+}
+
+
+
+/* DESCRIPTION */
+
+.balance-card p {
+
+    color: #94a3b8;
+
+    font-size: .79rem;
+
+    margin: 9px 0 0;
+
+}
+
+
+
+/* PROGRESS BAR */
+
+.balance-progress {
+
+    background: #334155;
+
+    border-radius: 8px;
+
+    height: 6px;
+
+    overflow: hidden;
+
+}
+
+
+
+.balance-progress i {
+
+    display: block;
+
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: #3b82f6;
+
+}
+
+
+
+.purple .balance-progress i {
+
+    background: #8b5cf6;
+
+}
+
+
+
+.orange .balance-progress i {
+
+    background: #f97316;
+
+}
+
+
+
+/* CONTENT PANEL */
+
+.content-card {
+
+    padding: 25px;
+
+}
+
+
+
+/* SECTION HEADER */
+
+.section-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 21px;
+
+}
+
+
+
+/* INFO STRIP */
+
+.leave-tip {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 17px 20px;
+
+    margin-top: 21px;
+
+    border-radius: 12px;
+
+    background: #172554;
+
+    color: #bfdbfe;
+
+}
+
+
+
+.leave-tip strong {
+
+    font-size: .9rem;
+
+}
+
+
+.leave-tip p {
+
+    margin: 3px 0 0;
+
+    color: #93c5fd;
+
+    font-size: .8rem;
+
+}

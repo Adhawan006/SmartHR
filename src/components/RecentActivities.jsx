@@ -44,13 +44,10 @@ function RecentActivities() {
       sx={{
         p: 3,
         borderRadius: 3,
+        width: "100%",
       }}
     >
-      <Typography
-        variant="h6"
-        fontWeight="bold"
-        mb={2}
-      >
+      <Typography variant="h6" fontWeight="bold" mb={2}>
         📋 Recent Activities
       </Typography>
 
@@ -62,6 +59,10 @@ function RecentActivities() {
               alignItems: "center",
               gap: 2,
               py: 2,
+              transition: "0.2s ease",
+              "&:hover": {
+                transform: "translateX(4px)",
+              },
             }}
           >
             <Avatar

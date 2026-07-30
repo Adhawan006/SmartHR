@@ -1,0 +1,91 @@
+/* PRIMARY BUTTON */
+
+.primary-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    background: #2563eb;
+
+    color: white;
+
+    padding: 11px 17px;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    box-shadow: 0 7px 14px rgba(37, 99, 235, 0.25);
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+
+}
+
+
+
+.primary-button:hover {
+
+    background: #1d4ed8;
+
+    transform: translateY(-2px);
+
+}
+
+
+
+/* TEXT LINKS */
+
+.text-link {
+
+    color: #60a5fa;
+
+    text-decoration: none;
+
+    font-size: .88rem;
+
+    font-weight: 700;
+
+}
+
+
+
+.text-link:hover {
+
+    color: #93c5fd;
+
+}
+
+
+
+/* APPLY ASIDE LINKS */
+
+.apply-aside a {
+
+    color: #60a5fa;
+
+    text-decoration: none;
+
+    font-size: .88rem;
+
+    font-weight: 700;
+
+}
+
+
+
+.apply-aside a:hover {
+
+    color: #93c5fd;
+
+}

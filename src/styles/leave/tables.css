@@ -1,0 +1,204 @@
+/* TABLE WRAPPER */
+
+.table-wrap {
+
+    overflow-x: auto;
+
+}
+
+
+
+/* TABLE */
+
+table {
+
+    width: 100%;
+
+    min-width: 670px;
+
+    border-collapse: collapse;
+
+    text-align: left;
+
+}
+
+
+
+th {
+
+    padding: 0 12px 11px;
+
+    color: #94a3b8;
+
+    font-size: .72rem;
+
+    letter-spacing: .04em;
+
+    text-transform: uppercase;
+
+}
+
+
+
+td {
+
+    padding: 16px 12px;
+
+    border-top: 1px solid #334155;
+
+    color: #e2e8f0;
+
+    font-size: .88rem;
+
+}
+
+
+
+td:first-child,
+th:first-child {
+
+    padding-left: 0;
+
+}
+
+
+
+/* SECONDARY TEXT */
+
+.table-muted {
+
+    display: block;
+
+    color: #94a3b8;
+
+    font-size: .75rem;
+
+    margin-top: 4px;
+
+}
+
+
+
+/* STATUS BADGES */
+
+.status {
+
+    display: inline-block;
+
+    border-radius: 99px;
+
+    padding: 5px 9px;
+
+    font-size: .72rem;
+
+    font-weight: 700;
+
+}
+
+
+
+.approved {
+
+    background: #064e3b;
+
+    color: #86efac;
+
+}
+
+
+
+.pending {
+
+    background: #78350f;
+
+    color: #fde68a;
+
+}
+
+
+
+.rejected {
+
+    background: #7f1d1d;
+
+    color: #fca5a5;
+
+}
+
+
+
+/* ACTION BUTTONS */
+
+.request-actions {
+
+    display: flex;
+
+    gap: 7px;
+
+}
+
+
+
+.request-actions button {
+
+    font-size: .75rem;
+
+    border-radius: 6px;
+
+    padding: 6px 8px;
+
+    font-weight: 700;
+
+}
+
+
+
+.approve {
+
+    color: #86efac;
+
+    border: 1px solid #166534;
+
+    background: #052e16;
+
+}
+
+
+
+.reject {
+
+    color: #fca5a5;
+
+    border: 1px solid #991b1b;
+
+    background: #450a0a;
+
+}
+
+
+
+/* EMPTY STATE */
+
+.empty-state {
+
+    color: #94a3b8;
+
+    text-align: center;
+
+    padding: 30px;
+
+}
+
+
+
+/* FILTER */
+
+.filter-select {
+
+    width: auto;
+
+    margin: 0;
+
+    font-size: .83rem;
+
+}

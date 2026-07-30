@@ -1,69 +1,121 @@
 import { useState } from "react";
+
 import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 const Attendance = () => {
-    const [attendance, setAttendance] = useState([
+    const [history] = useState([
         {
             id: 1,
-            name: "Priyank Chaudhary",
+            date: "30 Jul 2026",
             status: "Present",
         },
         {
             id: 2,
-            name: "Rahul Kumar",
-            status: "Absent",
+            date: "29 Jul 2026",
+            status: "Present",
+        },
+        {
+            id: 3,
+            date: "28 Jul 2026",
+            status: "Leave",
         },
     ]);
 
     return (
-        <div className="flex">
+        <div className="flex min-h-screen bg-slate-950 text-white">
             <Sidebar />
 
-            <div className="p-10 w-full">
-                <h1 className="text-3xl font-bold mb-6">
-                    Attendance
-                </h1>
+            <div className="flex-1 min-w-0">
+                <Navbar />
 
-                <table className="w-full border">
-                    <thead>
-                        <tr className="bg-gray-100">
-                            <th className="p-3">Employee</th>
-                            <th className="p-3">Status</th>
-                        </tr>
-                    </thead>
+                <div className="space-y-8 p-8">
+                    <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6 shadow-xl">
+                        <h1 className="text-3xl font-bold text-blue-400">
+                            Attendance
+                        </h1>
 
-                    <tbody>
-                        {attendance.map((item) => (
-                            <tr
-                                key={item.id}
-                                className="text-center border-b"
-                            >
-                                <td className="p-3">
-                                    {item.name}
-                                </td>
+                        <p className="mt-2 text-slate-400">
+                            View your attendance information.
+                        </p>
+                    </div>
 
-                                <td className="p-3">
-                                    <select
-                                        defaultValue={
-                                            item.status
-                                        }
-                                        className="border p-2 rounded"
-                                    >
-                                        <option>
-                                            Present
-                                        </option>
-                                        <option>
-                                            Absent
-                                        </option>
-                                        <option>
-                                            Leave
-                                        </option>
-                                    </select>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+                        <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6">
+                            <p className="text-sm text-slate-400">
+                                Status
+                            </p>
+
+                            <h2 className="mt-2 text-2xl font-bold text-emerald-400">
+                                Present
+                            </h2>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6">
+                            <p className="text-sm text-slate-400">
+                                Check-In
+                            </p>
+
+                            <h2 className="mt-2 text-2xl font-bold text-blue-400">
+                                09:00 AM
+                            </h2>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6">
+                            <p className="text-sm text-slate-400">
+                                Check-Out
+                            </p>
+
+                            <h2 className="mt-2 text-2xl font-bold text-amber-400">
+                                06:00 PM
+                            </h2>
+                        </div>
+
+                        <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6">
+                            <p className="text-sm text-slate-400">
+                                Attendance
+                            </p>
+
+                            <h2 className="mt-2 text-2xl font-bold text-purple-400">
+                                96%
+                            </h2>
+                        </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6 shadow-lg">
+                        <h2 className="mb-6 text-xl font-semibold">
+                            Attendance History
+                        </h2>
+
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-slate-700 text-left">
+                                        <th className="p-4">Date</th>
+                                        <th className="p-4">Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {history.map((item) => (
+                                        <tr
+                                            key={item.id}
+                                            className="border-b border-slate-800"
+                                        >
+                                            <td className="p-4">
+                                                {item.date}
+                                            </td>
+
+                                            <td className="p-4">
+                                                {item.status}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

@@ -1,0 +1,25 @@
+@media(max-width:900px){
+
+
+    .settings-page {
+
+        padding: 20px;
+
+    }
+
+
+}
+
+
+
+@media(max-width:700px){
+
+
+    .settings-page > div {
+
+        flex-direction: column;
+
+    }
+
+
+}

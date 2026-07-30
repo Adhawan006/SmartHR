@@ -1,8 +1,4 @@
-import {
-  Paper,
-  Typography,
-  Box,
-} from "@mui/material";
+import { Paper, Typography, Box } from "@mui/material";
 
 import {
   ResponsiveContainer,
@@ -32,11 +28,7 @@ const leaveData = [
   { name: "Rejected", value: 4 },
 ];
 
-const COLORS = [
-  "#4caf50",
-  "#ff9800",
-  "#f44336",
-];
+const COLORS = ["#4caf50", "#ff9800", "#f44336"];
 
 function AnalyticsChart() {
   return (
@@ -44,13 +36,10 @@ function AnalyticsChart() {
       sx={{
         p: 3,
         borderRadius: 3,
+        width: "100%",
       }}
     >
-      <Typography
-        variant="h6"
-        fontWeight="bold"
-        mb={3}
-      >
+      <Typography variant="h6" fontWeight="bold" mb={3}>
         📊 Analytics Dashboard
       </Typography>
 
@@ -62,22 +51,21 @@ function AnalyticsChart() {
             md: "2fr 1fr",
           },
           gap: 3,
+          width: "100%",
         }}
       >
-        {/* Attendance Chart */}
-
-        <Box sx={{ height: 320 }}>
-          <Typography
-            mb={2}
-            fontWeight="bold"
-          >
+        <Box
+          sx={{
+            height: 320,
+            width: "100%",
+            minWidth: 0,
+          }}
+        >
+          <Typography mb={2} fontWeight="bold">
             Monthly Attendance
           </Typography>
 
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-          >
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={attendanceData}>
               <XAxis dataKey="month" />
               <YAxis />
@@ -91,20 +79,18 @@ function AnalyticsChart() {
           </ResponsiveContainer>
         </Box>
 
-        {/* Leave Chart */}
-
-        <Box sx={{ height: 320 }}>
-          <Typography
-            mb={2}
-            fontWeight="bold"
-          >
+        <Box
+          sx={{
+            height: 320,
+            width: "100%",
+            minWidth: 0,
+          }}
+        >
+          <Typography mb={2} fontWeight="bold">
             Leave Overview
           </Typography>
 
-          <ResponsiveContainer
-            width="100%"
-            height="100%"
-          >
+          <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={leaveData}
@@ -113,10 +99,7 @@ function AnalyticsChart() {
                 label
               >
                 {leaveData.map((entry, index) => (
-                  <Cell
-                    key={index}
-                    fill={COLORS[index]}
-                  />
+                  <Cell key={index} fill={COLORS[index]} />
                 ))}
               </Pie>
 
