@@ -1,0 +1,200 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap");
+
+
+:root {
+    font-family: "DM Sans", sans-serif;
+    color: #e2e8f0;
+    background: #020617;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    margin: 0;
+    min-width: 320px;
+}
+
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+
+button {
+    cursor: pointer;
+}
+
+
+
+/* MAIN PAGE */
+
+.leave-page {
+
+    min-height: calc(100vh - 60px);
+
+    padding: 40px;
+
+    background:
+        radial-gradient(
+            circle at 90% 0%,
+            #1e3a8a40,
+            transparent 25rem
+        ),
+        #020617;
+
+}
+
+
+
+.leave-shell {
+
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+}
+
+
+
+/* HEADER */
+
+.leave-header {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 24px;
+
+    margin-bottom: 30px;
+
+}
+
+
+
+.eyebrow {
+
+    color: #3b82f6;
+
+    font-size: .72rem;
+
+    font-weight: 700;
+
+    letter-spacing: .13em;
+
+    margin: 0 0 8px;
+
+}
+
+
+
+h1,
+h2,
+h3 {
+
+    font-family: Outfit, sans-serif;
+
+    margin: 0;
+
+}
+
+
+
+h1 {
+
+    font-size: clamp(2rem,4vw,2.6rem);
+
+    letter-spacing: -.045em;
+
+    color: #f8fafc;
+
+}
+
+
+
+h2 {
+
+    font-size: 1.25rem;
+
+    color: #f8fafc;
+
+}
+
+
+
+h3 {
+
+    font-size: 1.1rem;
+
+}
+
+
+
+.page-subtitle,
+.section-heading p {
+
+    color: #94a3b8;
+
+    margin: 8px 0 0;
+
+    font-size: .92rem;
+
+}
+
+
+
+/* TABS */
+
+
+.leave-tabs {
+
+    display: flex;
+
+    gap: 25px;
+
+    border-bottom: 1px solid #334155;
+
+    margin-bottom: 28px;
+
+    overflow-x: auto;
+
+}
+
+
+
+.leave-tabs a {
+
+    color: #94a3b8;
+
+    padding-bottom: 12px;
+
+    text-decoration: none;
+
+    font-size: .9rem;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    border-bottom: 2px solid transparent;
+
+}
+
+
+
+.leave-tabs a.active {
+
+    color: #3b82f6;
+
+    border-color: #3b82f6;
+
+}

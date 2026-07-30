@@ -1,0 +1,134 @@
+/* RESPONSIVE DESIGN */
+
+
+@media (max-width: 900px) {
+
+
+    .balance-grid,
+    .balance-detail-grid {
+
+        grid-template-columns: repeat(2, 1fr);
+
+    }
+
+
+    .form-layout {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+}
+
+
+
+
+@media (max-width: 760px) {
+
+
+    .leave-page {
+
+        padding: 28px 16px;
+
+    }
+
+
+
+    .leave-header {
+
+        display: block;
+
+    }
+
+
+
+    .leave-header .primary-button {
+
+        margin-top: 20px;
+
+    }
+
+
+
+    .balance-grid,
+    .balance-detail-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+
+    .balance-card strong {
+
+        margin-top: 15px;
+
+    }
+
+
+
+    .leave-tip {
+
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+
+
+    .leave-tip a {
+
+        margin-left: 38px;
+
+    }
+
+
+
+    .content-card {
+
+        padding: 18px;
+
+    }
+
+
+
+    .section-heading {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+
+    .date-fields {
+
+        grid-template-columns: 1fr;
+
+        gap: 0;
+
+    }
+
+
+
+    .form-actions {
+
+        flex-direction: column-reverse;
+
+        align-items: stretch;
+
+    }
+
+
+
+    .primary-button {
+
+        width: 100%;
+
+    }
+
+
+}

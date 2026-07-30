@@ -1,0 +1,216 @@
+/* FORM LAYOUT */
+
+.form-layout {
+
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) 275px;
+
+    gap: 22px;
+
+}
+
+
+
+/* FORM LABELS */
+
+.leave-form label {
+
+    display: block;
+
+    color: #cbd5e1;
+
+    font-size: .83rem;
+
+    font-weight: 700;
+
+    margin-top: 18px;
+
+}
+
+
+
+/* INPUTS */
+
+.leave-form input,
+.leave-form select,
+.leave-form textarea,
+.filter-select {
+
+    width: 100%;
+
+    color: #f8fafc;
+
+    border: 1px solid #475569;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    padding: 10px 11px;
+
+    margin-top: 7px;
+
+    background: #0f172a;
+
+}
+
+
+
+.leave-form input:focus,
+.leave-form select:focus,
+.leave-form textarea:focus {
+
+    border-color: #3b82f6;
+
+    box-shadow: 0 0 0 3px #1d4ed840;
+
+}
+
+
+
+.leave-form textarea {
+
+    resize: vertical;
+
+}
+
+
+
+/* DATE INPUTS */
+
+.date-fields {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+
+}
+
+
+
+/* INFO MESSAGES */
+
+.days-preview,
+.success-notice {
+
+    padding: 10px 12px;
+
+    background: #172554;
+
+    color: #93c5fd;
+
+    border-radius: 7px;
+
+    font-size: .82rem;
+
+    margin: 16px 0 -1px;
+
+}
+
+
+
+.success-notice {
+
+    background: #064e3b;
+
+    color: #86efac;
+
+    margin: 15px 0 -4px;
+
+}
+
+
+
+/* ACTIONS */
+
+.form-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 19px;
+
+    border-top: 1px solid #334155;
+
+    margin-top: 23px;
+
+    padding-top: 19px;
+
+}
+
+
+
+.form-actions > a {
+
+    color: #94a3b8;
+
+    text-decoration: none;
+
+    font-size: .87rem;
+
+    font-weight: 700;
+
+}
+
+
+
+/* SIDE INFO */
+
+.apply-aside {
+
+    height: fit-content;
+
+    border: 1px solid #334155;
+
+    padding: 23px;
+
+    border-radius: 14px;
+
+    background: #1e293b;
+
+}
+
+
+
+.apply-aside h3 {
+
+    color: #f8fafc;
+
+}
+
+
+
+.apply-aside p,
+.apply-aside li {
+
+    color: #94a3b8;
+
+    font-size: .84rem;
+
+    line-height: 1.55;
+
+}
+
+
+
+.apply-aside ul {
+
+    padding-left: 18px;
+
+    margin: 17px 0;
+
+}
+
+
+
+.apply-aside li + li {
+
+    margin-top: 9px;
+
+}
