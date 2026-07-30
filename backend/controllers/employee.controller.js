@@ -1,19 +1,31 @@
-import Employee from "../models/employee.model.js";
+import { db } from "../config/firebase.js";
 
 // Add Employee
 export const addEmployee = async (req, res) => {
     try {
-        const employee = await Employee.create(req.body);
+        console.log("BODY:", req.body);
 
-        res.status(201).json({
+        const employee = {
+            ...req.body,
+            joiningDate: new Date().toISOString(),
+        };
+
+        await db
+            .collection("employees")
+            .doc(employee.employeeId)
+            .set(employee);
+
+        return res.status(201).json({
             success: true,
             message: "Employee added successfully",
-            employee
+            employee,
         });
     } catch (error) {
-        res.status(500).json({
+        console.log("ADD EMPLOYEE ERROR:", error);
+
+        return res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };
@@ -21,41 +33,54 @@ export const addEmployee = async (req, res) => {
 // Get All Employees
 export const getAllEmployees = async (req, res) => {
     try {
-        const employees = await Employee.find();
+        const snapshot = await db
+            .collection("employees")
+            .get();
+
+        const employees = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
 
         res.status(200).json({
             success: true,
             count: employees.length,
-            employees
+            employees,
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };
 
-// Get Single Employee
+// Get Employee By ID
 export const getEmployeeById = async (req, res) => {
     try {
-        const employee = await Employee.findById(req.params.id);
+        const doc = await db
+            .collection("employees")
+            .doc(req.params.id)
+            .get();
 
-        if (!employee) {
+        if (!doc.exists) {
             return res.status(404).json({
                 success: false,
-                message: "Employee not found"
+                message: "Employee not found",
             });
         }
 
         res.status(200).json({
             success: true,
-            employee
+            employee: {
+                id: doc.id,
+                ...doc.data(),
+            },
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };
@@ -63,31 +88,19 @@ export const getEmployeeById = async (req, res) => {
 // Update Employee
 export const updateEmployee = async (req, res) => {
     try {
-        const employee = await Employee.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {
-                new: true,
-                runValidators: true
-            }
-        );
-
-        if (!employee) {
-            return res.status(404).json({
-                success: false,
-                message: "Employee not found"
-            });
-        }
+        await db
+            .collection("employees")
+            .doc(req.params.id)
+            .update(req.body);
 
         res.status(200).json({
             success: true,
             message: "Employee updated successfully",
-            employee
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };
@@ -95,23 +108,19 @@ export const updateEmployee = async (req, res) => {
 // Delete Employee
 export const deleteEmployee = async (req, res) => {
     try {
-        const employee = await Employee.findByIdAndDelete(req.params.id);
-
-        if (!employee) {
-            return res.status(404).json({
-                success: false,
-                message: "Employee not found"
-            });
-        }
+        await db
+            .collection("employees")
+            .doc(req.params.id)
+            .delete();
 
         res.status(200).json({
             success: true,
-            message: "Employee deleted successfully"
+            message: "Employee deleted successfully",
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };
@@ -121,32 +130,33 @@ export const searchEmployee = async (req, res) => {
     try {
         const { name } = req.query;
 
-        const employees = await Employee.find({
-            $or: [
-                {
-                    firstName: {
-                        $regex: name,
-                        $options: "i"
-                    }
-                },
-                {
-                    lastName: {
-                        $regex: name,
-                        $options: "i"
-                    }
-                }
-            ]
-        });
+        const snapshot = await db
+            .collection("employees")
+            .get();
+
+        const employees = snapshot.docs
+            .map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }))
+            .filter((employee) => {
+                const fullName =
+                    `${employee.firstName} ${employee.lastName}`.toLowerCase();
+
+                return fullName.includes(
+                    name.toLowerCase()
+                );
+            });
 
         res.status(200).json({
             success: true,
             count: employees.length,
-            employees
+            employees,
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 };

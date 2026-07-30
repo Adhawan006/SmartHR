@@ -20,35 +20,42 @@ const Login = () => {
             [e.target.name]: e.target.value,
         });
     };
+const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    try {
+        const res = await axios.post(
+            "http://localhost:5000/api/auth/login",
+            formData
+        );
 
-        try {
-            const res = await axios.post(
-                "http://localhost:5000/api/auth/login",
-                formData
-            );
+        dispatch(
+            loginSuccess({
+                user: res.data.user,
+                token: res.data.token,
+            })
+        );
 
-            dispatch(
-                loginSuccess({
-                    user: res.data.user,
-                    token: res.data.token,
-                })
-            );
+        // Standardize role checking (handles potential "Admin" vs "admin" mismatch)
+        const role = res.data.user.role?.toLowerCase();
 
-            alert("Login Successful!");
+        // Direct to the route defined in your AppRoutes.jsx
+       if (role === "admin") {
+    navigate("/admin-dashboard");
+} else if (role === "hr") {
+    navigate("/hr-dashboard"); // <--- Redirects HR users here
+} else {
+    navigate("/employee-dash");
+}
+    } catch (error) {
+        console.log(error);
 
-            navigate("/dashboard");
-        } catch (error) {
-            console.log(error);
-
-            alert(
-                error?.response?.data?.message ||
-                    "Invalid Credentials"
-            );
-        }
-    };
+        alert(
+            error?.response?.data?.message ||
+            "Invalid Credentials"
+        );
+    }
+};
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center px-4">
@@ -143,11 +150,29 @@ const Login = () => {
                         <p className="text-gray-400 text-xs mt-2 text-center">
                             Email:
                             {" "}
-                            chaudharypriyank121@gmail.com
+                            admin@gmail.com
                         </p>
 
                         <p className="text-gray-400 text-xs text-center">
-                            Password: 123456789
+                            Password: admin
+                        </p>
+                        <p className="text-gray-400 text-xs mt-2 text-center">
+                            Email:
+                            {" "}
+                            hr@@gmail.com
+                        </p>
+
+                        <p className="text-gray-400 text-xs text-center">
+                            Password: 12345678
+                        </p>
+                        <p className="text-gray-400 text-xs mt-2 text-center">
+                            Email:
+                            {" "}
+                            employee@gmail.com
+                        </p>
+
+                        <p className="text-gray-400 text-xs text-center">
+                            Password: employee
                         </p>
                     </div>
 

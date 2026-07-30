@@ -132,7 +132,7 @@ const Employees = () => {
                                     (employee) => (
                                         <tr
                                             key={
-                                                employee._id
+                                                employee.id
                                             }
                                             className="border-b hover:bg-gray-50 text-center"
                                         >
@@ -165,7 +165,7 @@ const Employees = () => {
 
                                             <td className="p-4 space-x-2">
                                                 <Link
-                                                    to={`/employee/${employee._id}`}
+                                                    to={`/employee/${employee.id}`}
                                                     className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded"
                                                 >
                                                     View
@@ -175,7 +175,7 @@ const Employees = () => {
                                                     "admin" && (
                                                     <>
                                                         <Link
-                                                            to={`/edit-employee/${employee._id}`}
+                                                            to={`/edit-employee/${employee.id}`}
                                                             className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded"
                                                         >
                                                             Edit
@@ -184,7 +184,7 @@ const Employees = () => {
                                                         <button
                                                             onClick={() =>
                                                                 deleteEmployee(
-                                                                    employee._id
+                                                                    employee.id
                                                                 )
                                                             }
                                                             className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
