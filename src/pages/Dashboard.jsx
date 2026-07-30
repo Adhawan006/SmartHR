@@ -1,116 +1,3 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import Sidebar from "../components/Sidebar";
-
-const Dashboard = () => {
-    const [employees, setEmployees] = useState([]);
-
-    useEffect(() => {
-        getEmployees();
-    }, []);
-
-    const getEmployees = async () => {
-        try {
-            const res = await axios.get(
-                "http://localhost:5000/api/employees"
-            );
-
-            setEmployees(res.data.employees);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    // Get unique departments
-    const departments = [
-        ...new Set(
-            employees.map((employee) => employee.department)
-        ),
-    ];
-
-    return (
-        <div className="flex">
-            <Sidebar />
-
-            <div className="p-10 w-full">
-                <h1 className="text-3xl font-bold mb-8">
-                    Dashboard
-                </h1>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div className="border p-5 rounded shadow">
-                        <h2 className="text-lg font-semibold">
-                            Total Employees
-                        </h2>
-
-                        <p className="text-4xl mt-3">
-                            {employees.length}
-                        </p>
-                    </div>
-
-                    <div className="border p-5 rounded shadow">
-                        <h2 className="text-lg font-semibold">
-                            Departments
-                        </h2>
-
-                        <p className="text-4xl mt-3">
-                            {departments.length}
-                        </p>
-                    </div>
-
-                    <div className="border p-5 rounded shadow">
-                        <h2 className="text-lg font-semibold">
-                            Active Employees
-                        </h2>
-
-                        <p className="text-4xl mt-3">
-                            {employees.length}
-                        </p>
-                    </div>
-                </div>
-
-                {/* Recent Employees */}
-                <div className="mt-10">
-                    <h2 className="text-2xl font-semibold mb-4">
-                        Recent Employees
-                    </h2>
-
-                    <table className="w-full border">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="p-3">Name</th>
-                                <th className="p-3">Department</th>
-                                <th className="p-3">Designation</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {employees.slice(0, 5).map((emp) => (
-                                <tr
-                                    key={emp._id}
-                                    className="text-center border-b"
-                                >
-                                    <td className="p-3">
-                                        {emp.firstName}{" "}
-                                        {emp.lastName}
-                                    </td>
-
-                                    <td className="p-3">
-                                        {emp.department}
-                                    </td>
-
-                                    <td className="p-3">
-                                        {emp.designation}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    );
-};
 import {
   Box,
   Typography,
@@ -130,9 +17,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import SearchIcon from "@mui/icons-material/Search";
 import DownloadIcon from "@mui/icons-material/Download";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+// import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
-import StatsCard from "../components/StatsCard";
+// import StatsCard from "../components/StatsCard";
 import AnalyticsChart from "../components/AnalyticsChart";
 import RecentActivities from "../components/RecentActivities";
 import QuickActions from "../components/QuickActions";
@@ -172,45 +59,37 @@ function Dashboard() {
       subtitle: "New Department",
     },
   ];
-const handleDownloadReport = () => {
-  const report = [
-    ["Employee ID", "Employee Name", "Department", "Attendance", "Leave Status"],
-    ["EMP001", "Rahul Sharma", "IT", "Present", "None"],
-    ["EMP002", "Priya Verma", "HR", "Present", "Approved"],
-    ["EMP003", "Aman Singh", "Finance", "Absent", "Pending"],
-    ["EMP004", "Neha Gupta", "Marketing", "Present", "None"],
-  ];
 
-  const csvContent = report
-    .map((row) => row.join(","))
-    .join("\n");
+  const handleDownloadReport = () => {
+    const report = [
+      ["Employee ID", "Employee Name", "Department", "Attendance", "Leave Status"],
+      ["EMP001", "Rahul Sharma", "IT", "Present", "None"],
+      ["EMP002", "Priya Verma", "HR", "Present", "Approved"],
+      ["EMP003", "Aman Singh", "Finance", "Absent", "Pending"],
+      ["EMP004", "Neha Gupta", "Marketing", "Present", "None"],
+    ];
 
-  const blob = new Blob([csvContent], {
-    type: "text/csv;charset=utf-8;",
-  });
+    const csvContent = report.map((row) => row.join(",")).join("\n");
 
-  const url = window.URL.createObjectURL(blob);
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "Employee_Report.csv";
+    const url = window.URL.createObjectURL(blob);
 
-  document.body.appendChild(link);
-  link.click();
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Employee_Report.csv";
 
-  document.body.removeChild(link);
-  window.URL.revokeObjectURL(url);
-};
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        minHeight: "100vh",
-        bgcolor: "#f5f7fb",
-      }}
-    >
-      {/* Sidebar */}
-
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f7fb" }}>
       <Box
         sx={{
           width: 250,
@@ -219,48 +98,19 @@ const handleDownloadReport = () => {
           p: 3,
         }}
       >
-        <Typography
-          variant="h5"
-          fontWeight="bold"
-          mb={5}
-        >
+        <Typography variant="h5" fontWeight="bold" mb={5}>
           SmartHR Lite
         </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            bgcolor: "#1e293b",
-            p: 1.5,
-            borderRadius: 2,
-            mb: 2,
-          }}
-        >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
           <DashboardIcon />
           <Typography>Dashboard</Typography>
         </Box>
 
-        <Box
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    gap: 2,
-    p: 1.5,
-    mb: 1,
-    borderRadius: 2,
-    cursor: "pointer",
-    transition: "0.3s",
-    "&:hover": {
-      bgcolor: "#1e293b",
-      transform: "translateX(5px)",
-    },
-  }}
->
-  <GroupsIcon />
-  <Typography>Employees</Typography>
-</Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+          <GroupsIcon />
+          <Typography>Employees</Typography>
+        </Box>
 
         <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
           <AccessTimeIcon />
@@ -278,8 +128,6 @@ const handleDownloadReport = () => {
         </Box>
       </Box>
 
-      {/* Main Content */}
-
       <Box flex={1}>
         <Paper
           elevation={1}
@@ -293,147 +141,40 @@ const handleDownloadReport = () => {
           }}
         >
           <TextField
-  size="small"
-  placeholder="Search employees, departments..."
-  sx={{
-    width: 340,
-    "& .MuiOutlinedInput-root": {
-      borderRadius: "14px",
-      bgcolor: "#fff",
-      transition: "0.3s",
-      "&:hover": {
-        boxShadow: "0 4px 12px rgba(25,118,210,0.15)",
-      },
-      "&.Mui-focused": {
-        boxShadow: "0 4px 16px rgba(25,118,210,0.25)",
-      },
-    },
-  }}
-  InputProps={{
-    startAdornment: (
-      <InputAdornment position="start">
-        <SearchIcon color="primary" />
-      </InputAdornment>
-    ),
-  }}
-/>
+            size="small"
+            placeholder="Search employees, departments..."
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="primary" />
+                </InputAdornment>
+              ),
+            }}
+          />
 
-          <Box
-            display="flex"
-            alignItems="center"
-            gap={2}
-          >
+          <Box display="flex" alignItems="center" gap={2}>
             <NotificationsIcon />
 
-            <Avatar
-              sx={{
-                bgcolor: "#1976d2",
-              }}
-            >
-              A
-            </Avatar>
+            <Avatar sx={{ bgcolor: "#1976d2" }}>A</Avatar>
           </Box>
         </Paper>
-                <Box p={4}>
-          {/* Header */}
 
-<Box
-  sx={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    mb: 4,
-    gap: 2,
-  }}
->
-  <Box>
-    <Typography
-      variant="h5"
-      fontWeight="bold"
-    >
-      Good Morning, Admin 👋
-    </Typography>
-
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        gap: 1,
-        mt: 1,
-      }}
-    >
-      <CalendarTodayIcon
-        sx={{
-          fontSize: 18,
-          color: "#1976d2",
-        }}
-      />
-
-      <Typography
-        variant="body2"
-        color="text.secondary"
-      >
-        {new Date().toDateString()}
-      </Typography>
-    </Box>
-
-    <Typography
-      color="text.secondary"
-      mt={1}
-    >
-      Manage your workforce efficiently from one dashboard.
-    </Typography>
-  </Box>
-
-  <Button
-    variant="contained"
-    startIcon={<DownloadIcon />}
-    onClick={handleDownloadReport}
-    sx={{
-      borderRadius: 3,
-      textTransform: "none",
-      px: 3,
-      py: 1.2,
-      boxShadow: 3,
-    }}
-  >
-    Download Report
-  </Button>
-</Box>
-          {/* Stats Cards */}
-
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "1fr 1fr",
-                lg: "repeat(4,1fr)",
-              },
-              gap: 3,
-              mb: 4,
-            }}
+        <Box p={4}>
+          <Button
+            variant="contained"
+            startIcon={<DownloadIcon />}
+            onClick={handleDownloadReport}
           >
-            {cards.map((card) => (
-              <StatsCard
-                key={card.title}
-                {...card}
-              />
-            ))}
+            Download Report
+          </Button>
+
+          <Box mt={4}>
+            <AnalyticsChart />
           </Box>
-
-          {/* Analytics */}
-
-          <AnalyticsChart />
-
-          {/* Quick Actions */}
 
           <Box mt={4}>
             <QuickActions />
           </Box>
-
-          {/* Recent Activities */}
 
           <Box mt={4}>
             <RecentActivities />
