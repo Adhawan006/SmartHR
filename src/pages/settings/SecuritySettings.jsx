@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 
 function SecuritySettings() {
+
+    const { changePassword } = useAuth();
 
     const [form, setForm] = useState({
         currentPassword: "",
@@ -11,10 +14,11 @@ function SecuritySettings() {
 
 
     const [message, setMessage] = useState("");
+    const [submitting, setSubmitting] = useState(false);
 
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
 
         e.preventDefault();
 
@@ -43,17 +47,37 @@ function SecuritySettings() {
         }
 
 
+        setSubmitting(true);
 
-        setMessage(
-            "Password updated successfully"
-        );
+        try {
 
+            await changePassword(form.currentPassword, form.newPassword);
 
-        setForm({
-            currentPassword:"",
-            newPassword:"",
-            confirmPassword:"",
-        });
+            setMessage(
+                "Password updated successfully"
+            );
+
+            setForm({
+                currentPassword:"",
+                newPassword:"",
+                confirmPassword:"",
+            });
+
+        } catch (err) {
+
+            console.error(err);
+
+            setMessage(
+                err.code === "auth/wrong-password" || err.code === "auth/invalid-credential"
+                    ? "Current password is incorrect."
+                    : "Failed to update password."
+            );
+
+        } finally {
+
+            setSubmitting(false);
+
+        }
 
     };
 
@@ -174,6 +198,7 @@ function SecuritySettings() {
 
                 <button
                     type="submit"
+                    disabled={submitting}
                     className="
                     bg-blue-600
                     hover:bg-blue-700
@@ -182,10 +207,11 @@ function SecuritySettings() {
                     rounded-lg
                     text-white
                     font-semibold
+                    disabled:opacity-50
                     "
                 >
 
-                    Update Password
+                    {submitting ? "Updating..." : "Update Password"}
 
                 </button>
 

@@ -2,23 +2,21 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import axios from "axios";
+import { getEmployees } from "../services/employeeService";
 
 const HRDashboard = () => {
   const [employees, setEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const { token, user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/employees", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setEmployees(response.data.employees || []);
+        const data = await getEmployees();
+        setEmployees(data || []);
       } catch (error) {
         console.error("Error fetching employees:", error);
       } finally {
@@ -27,7 +25,7 @@ const HRDashboard = () => {
     };
 
     fetchEmployees();
-  }, [token]);
+  }, []);
 
   const filteredEmployees = employees.filter((emp) => {
     // Construct full name if first and last names are stored separately

@@ -3,29 +3,22 @@ import BalanceCard from "./BalanceCard";
 import RequestTable from "./RequestTable";
 
 
-const balances = [
-    {
-        name:"Casual Leave",
-        used:2,
-        total:12,
-        color:"blue"
-    },
-    {
-        name:"Sick Leave",
-        used:1,
-        total:10,
-        color:"purple"
-    },
-    {
-        name:"Earned Leave",
-        used:3,
-        total:18,
-        color:"orange"
-    }
-];
+const QUOTAS = {
+    "Casual Leave": { total: 12, color: "blue" },
+    "Sick Leave": { total: 10, color: "purple" },
+    "Earned Leave": { total: 18, color: "orange" },
+};
 
 
-function LeaveOverview({requests,setRequests}){
+function LeaveOverview({requests,updateStatus}){
+
+    const balances = Object.entries(QUOTAS).map(([name, config]) => {
+        const used = requests
+            .filter((r) => r.type === name && r.status === "Approved")
+            .reduce((sum, r) => sum + (Number(r.days) || 0), 0);
+
+        return { name, used, total: config.total, color: config.color };
+    });
 
     const pending = requests.filter(
         item => item.status === "Pending"
@@ -115,7 +108,7 @@ function LeaveOverview({requests,setRequests}){
 
                     <RequestTable
                     requests={requests.slice(0,3)}
-                    setRequests={setRequests}
+                    updateStatus={updateStatus}
                     compact
                     />
 

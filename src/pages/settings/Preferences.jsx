@@ -1,18 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { getUserSettings, saveUserSettings } from "../../services/settingsService";
 
 
 function Preferences() {
 
+    const { user } = useSelector((state) => state.auth);
 
     const [preferences, setPreferences] = useState({
-
         language: "English",
-
         theme: "Dark Theme",
-
         timezone: "India Standard Time",
-
     });
+
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        if (!user) return;
+
+        getUserSettings(user.uid)
+            .then((settings) =>
+                setPreferences({
+                    language: settings.language,
+                    theme: settings.theme,
+                    timezone: settings.timezone,
+                })
+            )
+            .finally(() => setLoading(false));
+    }, [user]);
 
 
 
@@ -29,6 +46,30 @@ function Preferences() {
     };
 
 
+    const handleSave = async () => {
+        setSaving(true);
+        setMessage("");
+
+        try {
+            await saveUserSettings(user.uid, preferences);
+            setMessage("Preferences saved.");
+        } catch (err) {
+            console.error(err);
+            setMessage("Failed to save preferences.");
+        } finally {
+            setSaving(false);
+        }
+    };
+
+
+    if (loading) {
+        return (
+            <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 text-slate-400">
+                Loading preferences...
+            </div>
+        );
+    }
+
 
     return (
 
@@ -39,6 +80,11 @@ function Preferences() {
                 Preferences
             </h2>
 
+            {message && (
+                <div className="mb-5 p-3 rounded-lg bg-blue-900 text-blue-200 text-sm">
+                    {message}
+                </div>
+            )}
 
 
             <div className="space-y-5">
@@ -164,6 +210,8 @@ function Preferences() {
 
 
             <button
+                onClick={handleSave}
+                disabled={saving}
                 className="
                 mt-6
                 bg-blue-600
@@ -173,9 +221,10 @@ function Preferences() {
                 rounded-lg
                 text-white
                 font-semibold
+                disabled:opacity-50
                 "
             >
-                Save Preferences
+                {saving ? "Saving..." : "Save Preferences"}
             </button>
 
 

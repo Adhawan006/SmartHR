@@ -3,7 +3,7 @@ import RequestTable from "./RequestTable";
 
 function TeamRequests({
     requests,
-    setRequests
+    updateStatus
 }) {
 
 
@@ -70,7 +70,7 @@ function TeamRequests({
 
                         requests={requests}
 
-                        setRequests={setRequests}
+                        updateStatus={updateStatus}
 
                         manager
 

@@ -22,7 +22,7 @@ const balances = [
 
 
 
-function ApplyLeave({ requests, setRequests }) {
+function ApplyLeave({ onSubmit }) {
 
 
     const [form, setForm] = useState({
@@ -35,6 +35,8 @@ function ApplyLeave({ requests, setRequests }) {
 
 
     const [notice, setNotice] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState("");
 
 
 
@@ -65,10 +67,11 @@ function ApplyLeave({ requests, setRequests }) {
 
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
 
         e.preventDefault();
 
+        setError("");
 
         if (!days || !form.reason.trim()) {
 
@@ -76,48 +79,39 @@ function ApplyLeave({ requests, setRequests }) {
 
         }
 
+        setSubmitting(true);
 
+        try {
 
-        const newRequest = {
+            await onSubmit(form, days);
 
-            id: Date.now(),
+            setNotice(
+                "Leave request submitted successfully."
+            );
 
-            ...form,
+            setForm({
 
-            days,
+                type: "Casual Leave",
 
-            status: "Pending",
+                from: "",
 
-            applied: "Just now",
+                to: "",
 
-        };
+                reason: "",
 
+            });
 
+        } catch (err) {
 
-        setRequests([
-            newRequest,
-            ...requests,
-        ]);
+            console.error(err);
 
+            setError("Failed to submit leave request. Please try again.");
 
+        } finally {
 
-        setNotice(
-            "Leave request submitted successfully."
-        );
+            setSubmitting(false);
 
-
-
-        setForm({
-
-            type: "Casual Leave",
-
-            from: "",
-
-            to: "",
-
-            reason: "",
-
-        });
+        }
 
     };
 
@@ -178,6 +172,15 @@ function ApplyLeave({ requests, setRequests }) {
 
                             <p className="success-notice">
                                 ✓ {notice}
+                            </p>
+
+                        }
+
+                        {
+                            error &&
+
+                            <p className="success-notice" style={{ color: "#f87171" }}>
+                                {error}
                             </p>
 
                         }
@@ -353,9 +356,10 @@ function ApplyLeave({ requests, setRequests }) {
                             <button
                                 className="primary-button"
                                 type="submit"
+                                disabled={submitting}
                             >
 
-                                Submit Request
+                                {submitting ? "Submitting..." : "Submit Request"}
 
                             </button>
 

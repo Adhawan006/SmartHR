@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 
 const AddUser = () => {
   const navigate = useNavigate();
+  const { createUserAsAdmin } = useAuth();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,25 +30,23 @@ const AddUser = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        formData
-      );
+      await createUserAsAdmin(formData);
 
-      if (response.data.success) {
-        setMessage({ type: "success", text: "User account created successfully!" });
-        setFormData({ name: "", email: "", password: "", role: "employee" });
-        
-        // Optional: Redirect to employees list or dashboard after 1.5s
-        setTimeout(() => {
-          navigate("/hr-dashboard");
-        }, 1500);
-      }
+      setMessage({ type: "success", text: "User account created successfully!" });
+      setFormData({ name: "", email: "", password: "", role: "employee" });
+
+      // Optional: Redirect to employees list or dashboard after 1.5s
+      setTimeout(() => {
+        navigate("/hr-dashboard");
+      }, 1500);
     } catch (error) {
       console.error("Error creating user:", error);
       setMessage({
         type: "error",
-        text: error?.response?.data?.message || "Failed to create user account.",
+        text:
+          error.code === "auth/email-already-in-use"
+            ? "A user with this email already exists."
+            : "Failed to create user account.",
       });
     } finally {
       setLoading(false);

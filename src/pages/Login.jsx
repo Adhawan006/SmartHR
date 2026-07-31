@@ -1,18 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
-import { loginSuccess } from "../redux/authSlice";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const { login, resetPassword } = useAuth();
 
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
+
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [resetNotice, setResetNotice] = useState("");
 
     const handleChange = (e) => {
         setFormData({
@@ -20,42 +22,54 @@ const Login = () => {
             [e.target.name]: e.target.value,
         });
     };
-const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    try {
-        const res = await axios.post(
-            "http://localhost:5000/api/auth/login",
-            formData
-        );
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
 
-        dispatch(
-            loginSuccess({
-                user: res.data.user,
-                token: res.data.token,
-            })
-        );
+        try {
+            const profile = await login(formData.email, formData.password);
+            const role = profile.role?.toLowerCase();
 
-        // Standardize role checking (handles potential "Admin" vs "admin" mismatch)
-        const role = res.data.user.role?.toLowerCase();
+            if (role === "admin") {
+                navigate("/dashboard");
+            } else if (role === "hr") {
+                navigate("/hr-dashboard");
+            } else {
+                navigate("/employee-dashboard");
+            }
+        } catch (err) {
+            console.error(err);
+            setError(
+                err.code === "auth/invalid-credential" ||
+                    err.code === "auth/wrong-password" ||
+                    err.code === "auth/user-not-found"
+                    ? "Invalid email or password."
+                    : "Failed to log in. Please try again."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
 
-        // Direct to the route defined in your AppRoutes.jsx
-       if (role === "admin") {
-    navigate("/admin-dashboard");
-} else if (role === "hr") {
-    navigate("/hr-dashboard"); // <--- Redirects HR users here
-} else {
-    navigate("/employee-dash");
-}
-    } catch (error) {
-        console.log(error);
+    const handleForgotPassword = async () => {
+        setError("");
+        setResetNotice("");
 
-        alert(
-            error?.response?.data?.message ||
-            "Invalid Credentials"
-        );
-    }
-};
+        if (!formData.email) {
+            setError("Enter your email above first, then click Forgot Password.");
+            return;
+        }
+
+        try {
+            await resetPassword(formData.email);
+            setResetNotice("Password reset email sent. Check your inbox.");
+        } catch (err) {
+            console.error(err);
+            setError("Could not send reset email. Check the address and try again.");
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center px-4">
@@ -77,6 +91,18 @@ const handleSubmit = async (e) => {
                             Employee Management System
                         </p>
                     </div>
+
+                    {error && (
+                        <div className="mb-5 p-3 rounded-xl bg-red-500/20 border border-red-500/50 text-red-200 text-sm">
+                            {error}
+                        </div>
+                    )}
+
+                    {resetNotice && (
+                        <div className="mb-5 p-3 rounded-xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-200 text-sm">
+                            {resetNotice}
+                        </div>
+                    )}
 
                     {/* Form */}
                     <form
@@ -117,15 +143,11 @@ const handleSubmit = async (e) => {
                             />
                         </div>
 
-                        {/* Remember Me */}
-                        <div className="flex justify-between text-sm text-gray-300">
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" />
-                                Remember Me
-                            </label>
-
+                        {/* Forgot password */}
+                        <div className="flex justify-end text-sm text-gray-300">
                             <button
                                 type="button"
+                                onClick={handleForgotPassword}
                                 className="hover:text-white"
                             >
                                 Forgot Password?
@@ -135,52 +157,20 @@ const handleSubmit = async (e) => {
                         {/* Login Button */}
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 text-white font-semibold py-4 rounded-xl shadow-lg"
+                            disabled={loading}
+                            className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 text-white font-semibold py-4 rounded-xl shadow-lg disabled:opacity-50"
                         >
-                            Login
+                            {loading ? "Logging in..." : "Login"}
                         </button>
                     </form>
-
-                    {/* Demo Credentials */}
-                    <div className="mt-6 p-4 bg-white/10 rounded-xl">
-                        <p className="text-gray-300 text-sm text-center">
-                            Demo Credentials
-                        </p>
-
-                        <p className="text-gray-400 text-xs mt-2 text-center">
-                            Email:
-                            {" "}
-                            admin@gmail.com
-                        </p>
-
-                        <p className="text-gray-400 text-xs text-center">
-                            Password: admin
-                        </p>
-                        <p className="text-gray-400 text-xs mt-2 text-center">
-                            Email:
-                            {" "}
-                            hr@@gmail.com
-                        </p>
-
-                        <p className="text-gray-400 text-xs text-center">
-                            Password: 12345678
-                        </p>
-                        <p className="text-gray-400 text-xs mt-2 text-center">
-                            Email:
-                            {" "}
-                            employee@gmail.com
-                        </p>
-
-                        <p className="text-gray-400 text-xs text-center">
-                            Password: employee
-                        </p>
-                    </div>
 
                     {/* Footer */}
                     <div className="mt-8 text-center">
                         <p className="text-gray-300 text-sm">
-                            Welcome back! Manage your employees
-                            efficiently.
+                            Don't have an account?{" "}
+                            <Link to="/register" className="text-blue-300 hover:text-white font-medium">
+                                Register
+                            </Link>
                         </p>
                     </div>
                 </div>

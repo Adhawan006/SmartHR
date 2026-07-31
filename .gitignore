@@ -3,35 +3,26 @@ node_modules/
 
 # Environment variables
 .env
-.env.*
-backend/.env
+.env.local
+.env.*.local
 
 # Build files
 dist/
 
 # Logs
-logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Coverage
-coverage/
-
-# Firebase
-.firebase/
-
-backend/config/serviceAccountKey.json
-
-# Vite
-.vite/
-
 # Editor
 .vscode/
-.idea/
 
 # OS files
 .DS_Store
 Thumbs.db
 
+# Backend dependencies
+backend/node_modules/
+
+# Backend environment
+backend/.env

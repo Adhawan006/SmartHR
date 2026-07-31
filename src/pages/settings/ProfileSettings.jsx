@@ -1,12 +1,32 @@
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useAuth } from "../../context/AuthContext";
+
 function ProfileSettings() {
+    const { user } = useSelector((state) => state.auth);
+    const { updateUserProfile } = useAuth();
 
-    const user = {
-        name: "Aditya Dhawan",
-        email: "aditya@example.com",
-        role: "Employee",
-        department: "Engineering",
+    const [form, setForm] = useState({
+        name: user?.name || "",
+        department: user?.department || "",
+    });
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState("");
+
+    const handleSave = async () => {
+        setSaving(true);
+        setMessage("");
+
+        try {
+            await updateUserProfile(form);
+            setMessage("Profile updated successfully.");
+        } catch (err) {
+            console.error(err);
+            setMessage("Failed to update profile.");
+        } finally {
+            setSaving(false);
+        }
     };
-
 
     return (
 
@@ -17,6 +37,11 @@ function ProfileSettings() {
                 Profile Information
             </h2>
 
+            {message && (
+                <div className="mb-5 p-3 rounded-lg bg-blue-900 text-blue-200 text-sm">
+                    {message}
+                </div>
+            )}
 
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -29,8 +54,8 @@ function ProfileSettings() {
                     </label>
 
                     <input
-                        value={user.name}
-                        readOnly
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
                         className="settings-input"
                     />
 
@@ -45,7 +70,7 @@ function ProfileSettings() {
                     </label>
 
                     <input
-                        value={user.email}
+                        value={user?.email || ""}
                         readOnly
                         className="settings-input"
                     />
@@ -61,7 +86,7 @@ function ProfileSettings() {
                     </label>
 
                     <input
-                        value={user.role}
+                        value={user?.role || ""}
                         readOnly
                         className="settings-input"
                     />
@@ -77,8 +102,8 @@ function ProfileSettings() {
                     </label>
 
                     <input
-                        value={user.department}
-                        readOnly
+                        value={form.department}
+                        onChange={(e) => setForm({ ...form, department: e.target.value })}
                         className="settings-input"
                     />
 
@@ -90,6 +115,8 @@ function ProfileSettings() {
 
 
             <button
+                onClick={handleSave}
+                disabled={saving}
                 className="
                 mt-6
                 bg-blue-600
@@ -99,9 +126,10 @@ function ProfileSettings() {
                 rounded-lg
                 text-white
                 font-semibold
+                disabled:opacity-50
                 "
             >
-                Save Changes
+                {saving ? "Saving..." : "Save Changes"}
             </button>
 
 

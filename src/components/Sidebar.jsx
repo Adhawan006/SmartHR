@@ -1,15 +1,18 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../redux/authSlice";
+import { useSelector } from "react-redux";
+import { useAuth } from "../context/AuthContext";
 
 const Sidebar = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const { user } = useSelector((state) => state.auth);
 
-    const handleLogout = () => {
-        dispatch(logout());
-        navigate("/", { replace: true });
+    const role = user?.role?.toLowerCase();
+    const isAdminOrHr = ["admin", "hr"].includes(role);
+
+    const handleLogout = async () => {
+        await logout();
+        navigate("/login", { replace: true });
     };
 
     return (
@@ -55,23 +58,25 @@ const Sidebar = () => {
                         Settings
                     </Link>
 
-                    <Link
-                        to="/reports"
-                        className="hover:bg-slate-800 px-4 py-2 rounded transition"
-                    >
-                        Reports
-                    </Link>
+                    {isAdminOrHr && (
+                        <Link
+                            to="/reports"
+                            className="hover:bg-slate-800 px-4 py-2 rounded transition"
+                        >
+                            Reports
+                        </Link>
+                    )}
 
-                    <Link
-                        to="/add-employee"
-                        className="hover:bg-slate-800 px-4 py-2 rounded transition"
-                    >
-                        Add Employee
-                    </Link>
+                    {isAdminOrHr && (
+                        <Link
+                            to="/add-employee"
+                            className="hover:bg-slate-800 px-4 py-2 rounded transition"
+                        >
+                            Add Employee
+                        </Link>
+                    )}
 
-                    {["admin", "hr"].includes(
-                        user?.role?.toLowerCase()
-                    ) && (
+                    {isAdminOrHr && (
                         <button
                             onClick={() => navigate("/add-user")}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition text-left"

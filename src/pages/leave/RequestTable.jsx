@@ -117,12 +117,8 @@ function RequestTable({
                                 <td>
 
                                     <strong>
-                                        Alex Morgan
+                                        {request.employeeName || "Unknown"}
                                     </strong>
-
-                                    <span className="table-muted">
-                                        Product Design
-                                    </span>
 
                                 </td>
                             }

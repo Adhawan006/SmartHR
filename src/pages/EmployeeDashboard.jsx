@@ -1,30 +1,91 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import EmployeeQuickActions from "../components/EmployeeQuickActions";
+import { getAttendanceForEmployee } from "../services/attendanceService";
+import { getLeavesForEmployee } from "../services/leaveService";
+
+const ANNUAL_LEAVE_QUOTA = 12 + 10 + 18; // Casual + Sick + Earned, see leave/LeaveBalance.jsx
 
 const EmployeeDashboard = () => {
     const { user } = useSelector((state) => state.auth);
 
+    const [attendancePercent, setAttendancePercent] = useState("—");
+    const [leaveBalance, setLeaveBalance] = useState("—");
+    const [pendingLeaves, setPendingLeaves] = useState(0);
+    const [recentActivity, setRecentActivity] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const load = async () => {
+            setLoading(true);
+            try {
+                const [attendance, leaves] = await Promise.all([
+                    getAttendanceForEmployee(user.uid),
+                    getLeavesForEmployee(user.uid),
+                ]);
+
+                if (attendance.length) {
+                    const present = attendance.filter((a) => a.status === "Present").length;
+                    setAttendancePercent(`${Math.round((present / attendance.length) * 100)}%`);
+                } else {
+                    setAttendancePercent("—");
+                }
+
+                const usedDays = leaves
+                    .filter((l) => l.status === "Approved")
+                    .reduce((sum, l) => sum + (Number(l.days) || 0), 0);
+                setLeaveBalance(`${ANNUAL_LEAVE_QUOTA - usedDays} Days`);
+
+                setPendingLeaves(leaves.filter((l) => l.status === "Pending").length);
+
+                const attendanceEvents = attendance.slice(0, 3).map((a) => {
+                    if (a.checkIn && a.checkOut) {
+                        return `Checked in and out on ${a.date}`;
+                    }
+                    if (a.checkIn) {
+                        return `Checked in on ${a.date} at ${new Date(a.checkIn).toLocaleTimeString()}`;
+                    }
+                    return `Marked ${a.status} on ${a.date}`;
+                });
+
+                const leaveEvents = leaves.slice(0, 3).map(
+                    (l) => `${l.type} request (${l.startDate} - ${l.endDate}) — ${l.status}`
+                );
+
+                setRecentActivity([...attendanceEvents, ...leaveEvents].slice(0, 5));
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        load();
+    }, [user]);
+
     const stats = [
         {
             title: "Attendance",
-            value: "96%",
+            value: loading ? "..." : attendancePercent,
             color: "text-blue-400",
         },
         {
             title: "Leave Balance",
-            value: "12 Days",
+            value: loading ? "..." : leaveBalance,
             color: "text-emerald-400",
         },
         {
-            title: "Pending Tasks",
-            value: "4",
+            title: "Pending Leave Requests",
+            value: loading ? "..." : pendingLeaves,
             color: "text-amber-400",
         },
         {
-            title: "Payroll Status",
-            value: "Processed",
+            title: "Account Status",
+            value: "Active",
             color: "text-purple-400",
         },
     ];
@@ -125,9 +186,12 @@ const EmployeeDashboard = () => {
                         </h2>
 
                         <div className="space-y-3 text-slate-300">
-                            <p>✓ Checked in at 09:05 AM</p>
-                            <p>✓ Leave request submitted</p>
-                            <p>✓ Payroll processed successfully</p>
+                            {recentActivity.length === 0 && !loading && (
+                                <p className="text-slate-500">No recent activity yet.</p>
+                            )}
+                            {recentActivity.map((item, idx) => (
+                                <p key={idx}>✓ {item}</p>
+                            ))}
                         </div>
                     </div>
 

@@ -1,15 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../redux/authSlice";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { logout } = useAuth();
     const { user } = useSelector((state) => state.auth);
 
-    const handleLogout = () => {
-        dispatch(logout());
-        navigate("/", { replace: true });
+    const handleLogout = async () => {
+        await logout();
+        navigate("/login", { replace: true });
     };
 
     return (

@@ -2,7 +2,7 @@ import { useState } from "react";
 import RequestTable from "./RequestTable";
 
 
-function LeaveHistory({ requests }) {
+function LeaveHistory({ requests, onCancel }) {
 
 
     const [filter, setFilter] = useState("All");
@@ -122,6 +122,29 @@ function LeaveHistory({ requests }) {
                         requests={filteredRequests}
 
                     />
+
+                    {
+                        onCancel &&
+                        filteredRequests.some((r) => r.status === "Pending") &&
+
+                        <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+
+                            {
+                                filteredRequests
+                                    .filter((r) => r.status === "Pending")
+                                    .map((r) => (
+                                        <button
+                                            key={r.id}
+                                            className="reject"
+                                            onClick={() => onCancel(r.id)}
+                                        >
+                                            Cancel "{r.type}" ({r.from} - {r.to})
+                                        </button>
+                                    ))
+                            }
+
+                        </div>
+                    }
 
 
 

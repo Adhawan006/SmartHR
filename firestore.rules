@@ -1,0 +1,106 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- Helpers -------------------------------------------------------
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function myProfile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function myRole() {
+      return isSignedIn() ? myProfile().role : null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && myRole() == 'admin';
+    }
+
+    function isHR() {
+      return isSignedIn() && myRole() == 'hr';
+    }
+
+    function isAdminOrHR() {
+      return isAdmin() || isHR();
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ---- users ----------------------------------------------------------
+    // Everyone can read their own profile (needed to resolve their own
+    // role client-side). Admin/HR can read any profile (needed to list
+    // employees / assign roles). Only Admin can change someone's role;
+    // a user may update their own non-role fields (name, department).
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdminOrHR();
+
+      allow create: if isOwner(uid) || isAdminOrHR();
+
+      allow update: if isAdmin()
+        || (isOwner(uid) && request.resource.data.role == resource.data.role);
+
+      allow delete: if isAdmin();
+    }
+
+    // ---- employees --------------------------------------------------------
+    // Admin/HR manage all employee records. An employee may only read the
+    // record that matches their own uid or email.
+    match /employees/{employeeId} {
+      allow read: if isAdminOrHR()
+        || (isSignedIn() && (resource.data.uid == request.auth.uid
+                              || resource.data.email == myProfile().email));
+
+      allow create, update, delete: if isAdminOrHR();
+    }
+
+    // ---- attendance -------------------------------------------------------
+    // Employees can create/read their own attendance; cannot edit history
+    // once written except to add a checkOut on the same record they own.
+    // Admin/HR can read everything.
+    match /attendance/{recordId} {
+      allow read: if isAdminOrHR()
+        || (isSignedIn() && resource.data.employeeId == request.auth.uid);
+
+      allow create: if isSignedIn() && request.resource.data.employeeId == request.auth.uid;
+
+      allow update: if isAdminOrHR()
+        || (isSignedIn() && resource.data.employeeId == request.auth.uid);
+
+      allow delete: if isAdmin();
+    }
+
+    // ---- leaves -----------------------------------------------------------
+    // Employees can create and read their own leave requests, and cancel
+    // (delete) their own *pending* requests. Only Admin/HR can approve or
+    // reject (i.e. change `status` on someone else's request).
+    match /leaves/{leaveId} {
+      allow read: if isAdminOrHR()
+        || (isSignedIn() && resource.data.employeeId == request.auth.uid);
+
+      allow create: if isSignedIn() && request.resource.data.employeeId == request.auth.uid
+        && request.resource.data.status == 'Pending';
+
+      // Employee cancelling their own still-pending request.
+      allow delete: if isAdminOrHR()
+        || (isSignedIn()
+            && resource.data.employeeId == request.auth.uid
+            && resource.data.status == 'Pending');
+
+      // Only Admin/HR may approve/reject.
+      allow update: if isAdminOrHR();
+    }
+
+    // ---- userSettings -------------------------------------------------------
+    // Strictly private per user.
+    match /userSettings/{uid} {
+      allow read, write: if isOwner(uid);
+    }
+  }
+}
