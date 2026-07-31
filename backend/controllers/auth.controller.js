@@ -98,3 +98,48 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+// Get all users (Admin/HR only) — used to populate the reset-password screen
+export const getAllUsers = async (req, res) => {
+  try {
+    const snapshot = await db.collection("users").get();
+
+    const users = snapshot.docs.map((doc) => {
+      const { password, ...rest } = doc.data();
+      return { id: doc.id, ...rest };
+    });
+
+    return res.status(200).json({ success: true, users });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// Reset a user's password on their behalf (Admin/HR only).
+// There's no self-service "forgot password" email flow yet since the project
+// doesn't use Firebase Auth's client SDK — this covers the SRS requirement
+// in a way that fits the existing Express + Firestore auth setup.
+export const resetPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ message: "New password must be at least 6 characters" });
+    }
+
+    const userRef = db.collection("users").doc(id);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await userRef.update({ password: hashedPassword });
+
+    return res.status(200).json({ success: true, message: "Password reset successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};

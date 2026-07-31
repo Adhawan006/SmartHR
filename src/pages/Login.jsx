@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import axios from "axios";
-
+import api from "../services/api";
 import { loginSuccess } from "../redux/authSlice";
 
 const Login = () => {
@@ -14,6 +13,8 @@ const Login = () => {
         password: "",
     });
 
+    const [showForgotInfo, setShowForgotInfo] = useState(false);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -24,10 +25,7 @@ const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-        const res = await axios.post(
-            "http://localhost:5000/api/auth/login",
-            formData
-        );
+        const res = await api.post("/auth/login", formData);
 
         dispatch(
             loginSuccess({
@@ -58,130 +56,120 @@ const handleSubmit = async (e) => {
 };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center px-4">
-            <div className="w-full max-w-md">
-                <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-8">
-                    {/* Logo */}
-                    <div className="text-center mb-8">
-                        <div className="w-20 h-20 mx-auto bg-white rounded-full flex items-center justify-center shadow-lg">
-                            <span className="text-3xl font-bold text-blue-600">
-                                SH
-                            </span>
-                        </div>
+        <div
+            className="min-h-screen bg-[#0B1E39] flex items-center justify-center px-4 py-10 relative overflow-hidden"
+            style={{
+                backgroundImage:
+                    "linear-gradient(rgba(255,255,255,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px)",
+                backgroundSize: "42px 42px",
+            }}
+        >
+            {/* Ambient corner glow */}
+            <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 bg-[#B98B3E]/10 rounded-full blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 bg-[#1E3A5F]/40 rounded-full blur-3xl" />
 
-                        <h1 className="text-4xl font-bold text-white mt-5">
-                            SmartHR
-                        </h1>
+            <div className="w-full max-w-md relative">
+                <div className="bg-gradient-to-b from-white to-slate-50 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)] overflow-hidden border border-slate-200/80 relative">
+                    {/* Faint texture for depth */}
+                    <div
+                        className="pointer-events-none absolute -top-10 -right-10 w-150 h-42 opacity-[0.06]"
+                        style={{
+                            backgroundImage:
+                                "radial-gradient(circle, #0f172a 1.5px, transparent 1.5px)",
+                            backgroundSize: "14px 14px",
+                        }}
+                    />
 
-                        <p className="text-gray-300 mt-2">
-                            Employee Management System
-                        </p>
-                    </div>
+                    <div className="p-8 sm:p-10 relative">
+                        {/* Header */}
+                        <div className="text-center mb-8">
 
-                    {/* Form */}
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-5"
-                    >
-                        {/* Email */}
-                        <div>
-                            <label className="block text-gray-200 mb-2">
-                                Email Address
-                            </label>
-
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="john@example.com"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                className="w-full p-4 rounded-xl bg-white/20 text-white placeholder-gray-300 border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            />
-                        </div>
-
-                        {/* Password */}
-                        <div>
-                            <label className="block text-gray-200 mb-2">
-                                Password
-                            </label>
-
-                            <input
-                                type="password"
-                                name="password"
-                                placeholder="••••••••"
-                                value={formData.password}
-                                onChange={handleChange}
-                                required
-                                className="w-full p-4 rounded-xl bg-white/20 text-white placeholder-gray-300 border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            />
-                        </div>
-
-                        {/* Remember Me */}
-                        <div className="flex justify-between text-sm text-gray-300">
-                            <label className="flex items-center gap-2">
-                                <input type="checkbox" />
-                                Remember Me
-                            </label>
-
-                            <button
-                                type="button"
-                                className="hover:text-white"
+                            <h1
+                                className="text-4xl font-serif font-bold tracking-tight"
+                                style={{ color: "#001f3f" }}
                             >
-                                Forgot Password?
-                            </button>
+                                SmartHR
+                            </h1>
+
+                            {/*<p className="text-teal-700 text-xs font-semibold tracking-[0.15em] uppercase mt-2">
+                                Employee Management System
+                            </p>
+                            */}
                         </div>
 
-                        {/* Login Button */}
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-600 hover:bg-blue-700 transition-all duration-300 text-white font-semibold py-4 rounded-xl shadow-lg"
+                        {/* Form */}
+                        <form
+                            onSubmit={handleSubmit}
+                            className="space-y-5"
                         >
-                            Login
-                        </button>
-                    </form>
+                            {/* Email */}
+                            <div>
+                                <label className="block text-xs font-semibold tracking-wide text-teal-700 uppercase mb-2">
+                                    Email Address
+                                </label>
 
-                    {/* Demo Credentials */}
-                    <div className="mt-6 p-4 bg-white/10 rounded-xl">
-                        <p className="text-gray-300 text-sm text-center">
-                            Demo Credentials
-                        </p>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="example@mail.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full px-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 border border-slate-300 shadow-sm hover:border-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-600/15 focus:border-teal-600 transition-all"
+                                />
+                            </div>
 
-                        <p className="text-gray-400 text-xs mt-2 text-center">
-                            Email:
-                            {" "}
-                            admin@gmail.com
-                        </p>
+                            {/* Password */}
+                            <div>
+                                <label className="block text-xs font-semibold tracking-wide text-teal-700 uppercase mb-2">
+                                    Password
+                                </label>
 
-                        <p className="text-gray-400 text-xs text-center">
-                            Password: admin
-                        </p>
-                        <p className="text-gray-400 text-xs mt-2 text-center">
-                            Email:
-                            {" "}
-                            hr@@gmail.com
-                        </p>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    placeholder="••••••••"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full px-4 py-3.5 rounded-xl bg-white text-slate-900 placeholder-slate-400 border border-slate-300 shadow-sm hover:border-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-600/15 focus:border-teal-600 transition-all"
+                                />
+                            </div>
 
-                        <p className="text-gray-400 text-xs text-center">
-                            Password: 12345678
-                        </p>
-                        <p className="text-gray-400 text-xs mt-2 text-center">
-                            Email:
-                            {" "}
-                            employee@gmail.com
-                        </p>
+                            {/* Remember Me */}
+                            <div className="flex justify-between items-center text-sm text-slate-600 pt-1">
+                                <label className="flex items-center gap-2 cursor-pointer select-none">
+                                    <input
+                                        type="checkbox"
+                                        className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-600/30"
+                                    />
+                                    Remember Me
+                                </label>
 
-                        <p className="text-gray-400 text-xs text-center">
-                            Password: employee
-                        </p>
-                    </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowForgotInfo((prev) => !prev)}
+                                    className="text-teal-700 font-medium hover:text-teal-800 transition-colors"
+                                >
+                                    Forgot Password?
+                                </button>
+                            </div>
 
-                    {/* Footer */}
-                    <div className="mt-8 text-center">
-                        <p className="text-gray-300 text-sm">
-                            Welcome back! Manage your employees
-                            efficiently.
-                        </p>
+                            {showForgotInfo && (
+                                <p className="text-slate-600 text-xs bg-teal-600/10 border border-teal-600/25 rounded-lg p-3">
+                                    Password resets are handled by your Admin or HR team. Please reach
+                                    out to them directly to get your password reset.
+                                </p>
+                            )}
+
+                            {/* Login Button */}
+                            <button
+                                type="submit"
+                                className="w-full bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 transition-all duration-200 text-white font-semibold tracking-wide py-3.5 rounded-xl shadow-lg shadow-teal-900/20 hover:shadow-xl hover:shadow-teal-900/25 hover:-translate-y-0.5 active:translate-y-0"
+                            >
+                                Sign In
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

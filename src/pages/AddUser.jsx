@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import Navbar from "../components/Navbar";
 
 const AddUser = () => {
@@ -29,10 +29,7 @@ const AddUser = () => {
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        formData
-      );
+      const response = await api.post("/auth/register", formData);
 
       if (response.data.success) {
         setMessage({ type: "success", text: "User account created successfully!" });
