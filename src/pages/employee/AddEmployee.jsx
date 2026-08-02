@@ -63,12 +63,12 @@ const AddEmployee = () => {
         <div className="flex min-h-screen bg-gray-100">
             <Sidebar />
 
-            <div className="flex-1 bg-blue-200 p-10">
+            <div className="flex-1 bg-gray-800 p-10">
                 <h1 className="text-4xl  text-red-50 font-bold mb-8">
                     Add Employee
                 </h1>
 
-                <div className="bg-white shadow-xl rounded-2xl p-8 max-w-5xl border border-slate-200">
+                <div className="bg-white/5 backdrop-blur-2xl  shadow-xl rounded-2xl p-8 max-w-5xl border border-slate-200">
                     {error && (
                         <div className="mb-5 p-3 rounded-lg bg-red-100 text-red-700">
                             {error}

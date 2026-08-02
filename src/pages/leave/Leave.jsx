@@ -23,71 +23,101 @@ import {
 
 function Leave() {
     const { user } = useSelector((state) => state.auth);
+
     const role = user?.role?.toLowerCase();
     const isManager = role === "admin" || role === "hr";
 
+    // All requests (only for HR/Admin)
     const [requests, setRequests] = useState([]);
+
+    // Logged-in user's requests
+    const [myRequests, setMyRequests] = useState([]);
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        loadRequests();
+        if (user) {
+            loadRequests();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, isManager]);
+    }, [user]);
+
+    const mapLeaves = (data) =>
+        data.map((r) => ({
+            ...r,
+            from: r.startDate,
+            to: r.endDate,
+            applied: r.createdAt?.toDate
+                ? r.createdAt.toDate().toLocaleDateString()
+                : "Just now",
+        }));
 
     const loadRequests = async () => {
         if (!user) return;
+
         setLoading(true);
 
         try {
-            const data = isManager
-                ? await getAllLeaves()
-                : await getLeavesForEmployee(user.uid);
+            // Always fetch logged-in user's leaves
+            const myLeaves = await getLeavesForEmployee(user.uid);
+            const mappedMyLeaves = mapLeaves(myLeaves);
 
-            const mapped = data.map((r) => ({
-                ...r,
-                from: r.startDate,
-                to: r.endDate,
-                applied: r.createdAt?.toDate
-                    ? r.createdAt.toDate().toLocaleDateString()
-                    : "Just now",
-            }));
+            setMyRequests(mappedMyLeaves);
 
-            setRequests(mapped);
+            if (isManager) {
+                // HR/Admin also fetch all leave requests
+                const allLeaves = await getAllLeaves();
+                setRequests(mapLeaves(allLeaves));
+            } else {
+                // Employee only has their own requests
+                setRequests(mappedMyLeaves);
+            }
         } catch (err) {
-            console.error(err);
+            console.error("Error loading leave data:", err);
         } finally {
             setLoading(false);
         }
     };
 
-    // Bridges the Firestore-backed data to the existing child components,
-    // which were originally written against local React state.
     const submitLeave = async (form, days) => {
-        await applyLeave({
-            employeeId: user.uid,
-            employeeName: user.name || user.email,
-            type: form.type,
-            startDate: form.from,
-            endDate: form.to,
-            reason: form.reason,
-            days,
-        });
-        await loadRequests();
+        try {
+            await applyLeave({
+                employeeId: user.uid,
+                employeeName: user.name || user.email,
+                type: form.type,
+                startDate: form.from,
+                endDate: form.to,
+                reason: form.reason,
+                days,
+            });
+
+            await loadRequests();
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     const updateStatus = async (id, status) => {
-        await setLeaveStatus(id, status, user.name || user.email);
-        await loadRequests();
+        try {
+            await setLeaveStatus(id, status, user.name || user.email);
+            await loadRequests();
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     const cancelRequest = async (id) => {
-        await cancelLeave(id);
-        await loadRequests();
+        try {
+            await cancelLeave(id);
+            await loadRequests();
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     if (loading) {
         return (
-            <div className="flex min-h-screen bg-slate-950 text-white items-center justify-center">
+            <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
                 Loading leave data...
             </div>
         );
@@ -101,33 +131,49 @@ function Leave() {
                 <Navbar />
 
                 <Routes>
+                    {/* Dashboard / Overview - only logged-in user's leaves */}
                     <Route
                         index
                         element={
                             <LeaveOverview
-                                requests={requests}
+                                requests={myRequests}
                                 updateStatus={updateStatus}
                             />
                         }
                     />
 
+                    {/* Apply Leave */}
                     <Route
                         path="apply"
-                        element={<ApplyLeave onSubmit={submitLeave} />}
+                        element={
+                            <ApplyLeave
+                                onSubmit={submitLeave}
+                            />
+                        }
                     />
 
-                    <Route path="balance" element={<LeaveBalance requests={requests} />} />
+                    {/* My Leave Balance */}
+                    <Route
+                        path="balance"
+                        element={
+                            <LeaveBalance
+                                requests={myRequests}
+                            />
+                        }
+                    />
 
+                    {/* My Leave History */}
                     <Route
                         path="history"
                         element={
                             <LeaveHistory
-                                requests={requests}
+                                requests={myRequests}
                                 onCancel={cancelRequest}
                             />
                         }
                     />
 
+                    {/* HR/Admin Only */}
                     <Route
                         path="requests"
                         element={
@@ -137,12 +183,18 @@ function Leave() {
                                     updateStatus={updateStatus}
                                 />
                             ) : (
-                                <Navigate to="/leave" replace />
+                                <Navigate
+                                    to="/leave"
+                                    replace
+                                />
                             )
                         }
                     />
 
-                    <Route path="*" element={<Navigate to="/leave" replace />} />
+                    <Route
+                        path="*"
+                        element={<Navigate to="/leave" replace />}
+                    />
                 </Routes>
             </div>
         </div>
