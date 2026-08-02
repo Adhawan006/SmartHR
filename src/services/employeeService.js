@@ -18,10 +18,19 @@ import { db } from "../firebase/config";
 const employeesRef = collection(db, "employees");
 
 export async function getEmployees() {
-    const snap = await getDocs(query(employeesRef, orderBy("createdAt", "desc")));
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-}
+    const snap = await getDocs(employeesRef);
 
+    console.log("Documents found:", snap.size);
+
+    snap.forEach((doc) => {
+        console.log(doc.id, doc.data());
+    });
+
+    return snap.docs.map((d) => ({
+        id: d.id,
+        ...d.data(),
+    }));
+}
 export async function getEmployeeById(id) {
     const snap = await getDoc(doc(db, "employees", id));
     if (!snap.exists()) return null;

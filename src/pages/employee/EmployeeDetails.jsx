@@ -73,7 +73,7 @@ const EmployeeDetails = () => {
                     Employee Details
                 </h1>
 
-                <div className="bg-white shadow-md rounded p-6">
+                <div className="bg-white text-black shadow-md rounded p-6">
                     <p>
                         <strong>Name:</strong>{" "}
                         {employee.firstName} {employee.lastName}

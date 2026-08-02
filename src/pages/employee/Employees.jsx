@@ -15,8 +15,13 @@ const Employees = () => {
     const [error, setError] = useState("");
 
     const { user } = useSelector((state) => state.auth);
+
     const role = user?.role?.toLowerCase();
-    const canManage = role === "admin" || role === "hr";
+
+    const isAdmin = role === "admin";
+    const isHR = role === "hr";
+
+    const canViewAll = isAdmin || isHR;
 
     useEffect(() => {
         fetchEmployees();
@@ -53,24 +58,39 @@ const Employees = () => {
         }
     };
 
-    // Employees may only see their own record.
-    const visibleEmployees = canManage
+    // Admin & HR can see all employees
+    // Employee can only see their own record
+    const visibleEmployees = canViewAll
         ? employees
-        : employees.filter((emp) => emp.uid === user?.uid || emp.email === user?.email);
+        : employees.filter(
+              (emp) =>
+                  emp.uid === user?.uid ||
+                  emp.email === user?.email
+          );
 
-    const filteredEmployees = visibleEmployees.filter((employee) =>
-        `${employee.firstName || ""} ${employee.lastName || ""}`
-            .toLowerCase()
-            .includes(search.toLowerCase())
-    );
+    const filteredEmployees = visibleEmployees.filter((employee) => {
+        const query = search.toLowerCase();
+
+        return (
+            `${employee.firstName || ""} ${employee.lastName || ""}`
+                .toLowerCase()
+                .includes(query) ||
+            employee.email?.toLowerCase().includes(query) ||
+            employee.department?.toLowerCase().includes(query) ||
+            employee.designation?.toLowerCase().includes(query)
+        );
+    });
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-gray-800">
             <Sidebar />
 
             <div className="flex-1 p-8">
+
                 {/* Header */}
+
                 <div className="flex justify-between items-center mb-8">
+
                     <div>
                         <h1 className="text-4xl font-bold text-gray-800">
                             Employees
@@ -81,7 +101,7 @@ const Employees = () => {
                         </p>
                     </div>
 
-                    {canManage && (
+                    {isAdmin && (
                         <Link
                             to="/add-employee"
                             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg shadow"
@@ -89,13 +109,15 @@ const Employees = () => {
                             + Add Employee
                         </Link>
                     )}
+
                 </div>
 
                 {/* Search */}
+
                 <div className="mb-6">
                     <input
                         type="text"
-                        placeholder="Search by employee name..."
+                        placeholder="Search employee..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="w-full p-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -109,8 +131,11 @@ const Employees = () => {
                 )}
 
                 {/* Table */}
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <table className="w-full">
+
+                <div className=" rounded-xl shadow-lg overflow-x-auto">
+
+                    <table className="min-w-full">
+
                         <thead>
                             <tr className="bg-blue-600 text-white">
                                 <th className="p-4">Name</th>
@@ -122,33 +147,58 @@ const Employees = () => {
                         </thead>
 
                         <tbody>
+
                             {loading ? (
+
                                 <tr>
-                                    <td colSpan="5" className="text-center p-8 text-gray-500">
-                                        Loading employees...
+                                    <td
+                                        colSpan="5"
+                                        className="text-center p-8"
+                                    >
+                                        Loading Employees...
                                     </td>
                                 </tr>
+
                             ) : filteredEmployees.length === 0 ? (
+
                                 <tr>
-                                    <td colSpan="5" className="text-center p-8 text-gray-500">
+                                    <td
+                                        colSpan="5"
+                                        className="text-center p-8 text-gray-500"
+                                    >
                                         No Employees Found
                                     </td>
                                 </tr>
+
                             ) : (
+
                                 filteredEmployees.map((employee) => (
+
                                     <tr
                                         key={employee.id}
-                                        className="border-b hover:bg-gray-50 text-center"
+                                        className="border-b hover:bg-gray-600 text-center"
                                     >
                                         <td className="p-4">
-                                            {employee.firstName} {employee.lastName}
+                                            {employee.firstName}{" "}
+                                            {employee.lastName}
                                         </td>
 
-                                        <td className="p-4">{employee.email}</td>
-                                        <td className="p-4">{employee.department}</td>
-                                        <td className="p-4">{employee.designation}</td>
+                                        <td className="p-4">
+                                            {employee.email}
+                                        </td>
+
+                                        <td className="p-4">
+                                            {employee.department}
+                                        </td>
+
+                                        <td className="p-4">
+                                            {employee.designation}
+                                        </td>
 
                                         <td className="p-4 space-x-2">
+
+                                            {/* Everyone can View */}
+
                                             <Link
                                                 to={`/employee/${employee.id}`}
                                                 className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded"
@@ -156,7 +206,9 @@ const Employees = () => {
                                                 View
                                             </Link>
 
-                                            {canManage && (
+                                            {/* Only Admin can Edit/Delete */}
+
+                                            {isAdmin && (
                                                 <>
                                                     <Link
                                                         to={`/edit-employee/${employee.id}`}
@@ -166,26 +218,38 @@ const Employees = () => {
                                                     </Link>
 
                                                     <button
-                                                        onClick={() => deleteEmployee(employee.id)}
+                                                        onClick={() =>
+                                                            deleteEmployee(
+                                                                employee.id
+                                                            )
+                                                        }
                                                         className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded"
                                                     >
                                                         Delete
                                                     </button>
                                                 </>
                                             )}
+
                                         </td>
                                     </tr>
+
                                 ))
+
                             )}
+
                         </tbody>
+
                     </table>
+
                 </div>
 
-                {/* Footer */}
-                <div className="mt-6 text-gray-500">
+                <div className="mt-6 text-gray-600">
                     Total Employees:{" "}
-                    <span className="font-semibold">{filteredEmployees.length}</span>
+                    <span className="font-semibold">
+                        {filteredEmployees.length}
+                    </span>
                 </div>
+
             </div>
         </div>
     );

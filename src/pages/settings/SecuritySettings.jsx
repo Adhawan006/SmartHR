@@ -121,7 +121,7 @@ function SecuritySettings() {
 
 
 
-                <div>
+                <div className="flex gap-3">
 
                     <label className="text-sm text-slate-400">
                         Current Password
@@ -131,13 +131,14 @@ function SecuritySettings() {
                     <input
                         type="password"
                         value={form.currentPassword}
+                        placeholder="enter current Password"
                         onChange={(e)=>
                             setForm({
                                 ...form,
                                 currentPassword:e.target.value
                             })
                         }
-                        className="settings-input"
+                        className="settings-input  outline-1 rounded"
                     />
 
                 </div>
@@ -146,7 +147,7 @@ function SecuritySettings() {
 
 
 
-                <div>
+                <div  className="flex gap-3">
 
                     <label className="text-sm text-slate-400">
                         New Password
@@ -156,13 +157,14 @@ function SecuritySettings() {
                     <input
                         type="password"
                         value={form.newPassword}
+                        placeholder="enter new password"
                         onChange={(e)=>
                             setForm({
                                 ...form,
                                 newPassword:e.target.value
                             })
                         }
-                        className="settings-input"
+                        className="settings-input  outline-1 rounded"
                     />
 
                 </div>
@@ -171,7 +173,7 @@ function SecuritySettings() {
 
 
 
-                <div>
+                <div className="flex gap-3">
 
                     <label className="text-sm text-slate-400">
                         Confirm Password
@@ -181,13 +183,14 @@ function SecuritySettings() {
                     <input
                         type="password"
                         value={form.confirmPassword}
+                        placeholder="confirm new password"
                         onChange={(e)=>
                             setForm({
                                 ...form,
                                 confirmPassword:e.target.value
                             })
                         }
-                        className="settings-input"
+                        className="settings-input outline-1 rounded"
                     />
 
                 </div>

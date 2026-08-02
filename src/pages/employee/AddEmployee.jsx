@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import { addEmployee } from "../../services/employeeService";
 
+const inputClass =
+    "border border-slate-300 p-3 rounded-lg text-slate-800 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+
 const AddEmployee = () => {
     const navigate = useNavigate();
+
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
 
@@ -22,23 +26,34 @@ const AddEmployee = () => {
     });
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
+        setFormData((prev) => ({
+            ...prev,
             [e.target.name]: e.target.value,
-        });
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         setError("");
         setSubmitting(true);
 
         try {
-            await addEmployee(formData);
+            await addEmployee({
+                ...formData,
+                email: formData.email.trim().toLowerCase(),
+                firstName: formData.firstName.trim(),
+                lastName: formData.lastName.trim(),
+            });
+
             navigate("/employees");
         } catch (err) {
             console.error(err);
-            setError("Failed to add employee. Please try again.");
+
+            setError(
+                err.response?.data?.message ||
+                    "Failed to add employee. Please try again."
+            );
         } finally {
             setSubmitting(false);
         }
@@ -48,12 +63,12 @@ const AddEmployee = () => {
         <div className="flex min-h-screen bg-gray-100">
             <Sidebar />
 
-            <div className="flex-1 p-8">
-                <h1 className="text-4xl font-bold mb-8 text-gray-800">
+            <div className="flex-1 bg-blue-200 p-10">
+                <h1 className="text-4xl  text-red-50 font-bold mb-8">
                     Add Employee
                 </h1>
 
-                <div className="bg-white shadow-lg rounded-xl p-8 max-w-4xl">
+                <div className="bg-white shadow-xl rounded-2xl p-8 max-w-5xl border border-slate-200">
                     {error && (
                         <div className="mb-5 p-3 rounded-lg bg-red-100 text-red-700">
                             {error}
@@ -70,7 +85,7 @@ const AddEmployee = () => {
                             placeholder="Employee ID (EMP001)"
                             value={formData.employeeId}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
                             required
                         />
 
@@ -80,7 +95,7 @@ const AddEmployee = () => {
                             placeholder="First Name"
                             value={formData.firstName}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
                             required
                         />
 
@@ -90,7 +105,7 @@ const AddEmployee = () => {
                             placeholder="Last Name"
                             value={formData.lastName}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
                             required
                         />
 
@@ -100,17 +115,18 @@ const AddEmployee = () => {
                             placeholder="Email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
                             required
                         />
 
                         <input
-                            type="text"
+                            type="tel"
                             name="phone"
                             placeholder="Phone Number"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
+                            maxLength={10}
                             required
                         />
 
@@ -120,7 +136,7 @@ const AddEmployee = () => {
                             placeholder="Department"
                             value={formData.department}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
                             required
                         />
 
@@ -130,7 +146,7 @@ const AddEmployee = () => {
                             placeholder="Designation"
                             value={formData.designation}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
                             required
                         />
 
@@ -139,7 +155,7 @@ const AddEmployee = () => {
                             name="joiningDate"
                             value={formData.joiningDate}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
                             required
                         />
 
@@ -149,7 +165,8 @@ const AddEmployee = () => {
                             placeholder="Salary"
                             value={formData.salary}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg"
+                            className={inputClass}
+                            min="0"
                             required
                         />
 
@@ -158,15 +175,27 @@ const AddEmployee = () => {
                             placeholder="Address"
                             value={formData.address}
                             onChange={handleChange}
-                            className="border p-3 rounded-lg md:col-span-2"
                             rows="4"
+                            className={`${inputClass} md:col-span-2`}
                             required
                         />
 
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="md:col-span-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition disabled:opacity-50"
+                            className="
+                                md:col-span-2
+                                bg-blue-600
+                                hover:bg-blue-700
+                                hover:shadow-lg
+                                text-white
+                                py-3
+                                rounded-lg
+                                font-semibold
+                                transition-all
+                                duration-200
+                                disabled:opacity-50
+                            "
                         >
                             {submitting ? "Adding..." : "Add Employee"}
                         </button>

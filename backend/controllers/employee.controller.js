@@ -3,7 +3,38 @@ import { db } from "../config/firebase.js";
 // Add Employee
 export const addEmployee = async (req, res) => {
     try {
-        console.log("BODY:", req.body);
+        const {
+            employeeId,
+            firstName,
+            lastName,
+            email,
+            department,
+        } = req.body;
+
+        if (
+            !employeeId ||
+            !firstName ||
+            !lastName ||
+            !email ||
+            !department
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "All required fields must be provided.",
+            });
+        }
+
+        const existingEmployee = await db
+            .collection("employees")
+            .doc(employeeId)
+            .get();
+
+        if (existingEmployee.exists) {
+            return res.status(400).json({
+                success: false,
+                message: "Employee ID already exists.",
+            });
+        }
 
         const employee = {
             ...req.body,
@@ -12,7 +43,7 @@ export const addEmployee = async (req, res) => {
 
         await db
             .collection("employees")
-            .doc(employee.employeeId)
+            .doc(employeeId)
             .set(employee);
 
         return res.status(201).json({
@@ -21,8 +52,6 @@ export const addEmployee = async (req, res) => {
             employee,
         });
     } catch (error) {
-        console.log("ADD EMPLOYEE ERROR:", error);
-
         return res.status(500).json({
             success: false,
             message: error.message,
@@ -88,17 +117,29 @@ export const getEmployeeById = async (req, res) => {
 // Update Employee
 export const updateEmployee = async (req, res) => {
     try {
+        const doc = await db
+            .collection("employees")
+            .doc(req.params.id)
+            .get();
+
+        if (!doc.exists) {
+            return res.status(404).json({
+                success: false,
+                message: "Employee not found",
+            });
+        }
+
         await db
             .collection("employees")
             .doc(req.params.id)
             .update(req.body);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Employee updated successfully",
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: error.message,
         });
@@ -108,17 +149,29 @@ export const updateEmployee = async (req, res) => {
 // Delete Employee
 export const deleteEmployee = async (req, res) => {
     try {
+        const doc = await db
+            .collection("employees")
+            .doc(req.params.id)
+            .get();
+
+        if (!doc.exists) {
+            return res.status(404).json({
+                success: false,
+                message: "Employee not found",
+            });
+        }
+
         await db
             .collection("employees")
             .doc(req.params.id)
             .delete();
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Employee deleted successfully",
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: error.message,
         });
@@ -130,9 +183,14 @@ export const searchEmployee = async (req, res) => {
     try {
         const { name } = req.query;
 
-        const snapshot = await db
-            .collection("employees")
-            .get();
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: "Name query parameter is required.",
+            });
+        }
+
+        const snapshot = await db.collection("employees").get();
 
         const employees = snapshot.docs
             .map((doc) => ({
@@ -140,21 +198,20 @@ export const searchEmployee = async (req, res) => {
                 ...doc.data(),
             }))
             .filter((employee) => {
-                const fullName =
-                    `${employee.firstName} ${employee.lastName}`.toLowerCase();
+                const fullName = `${employee.firstName || ""} ${
+                    employee.lastName || ""
+                }`.toLowerCase();
 
-                return fullName.includes(
-                    name.toLowerCase()
-                );
+                return fullName.includes(name.toLowerCase());
             });
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             count: employees.length,
             employees,
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: error.message,
         });

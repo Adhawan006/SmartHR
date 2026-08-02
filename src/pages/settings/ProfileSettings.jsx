@@ -47,7 +47,7 @@ function ProfileSettings() {
             <div className="grid md:grid-cols-2 gap-6">
 
 
-                <div>
+                <div  className="gap-4 flex">
 
                     <label className="text-sm text-slate-400">
                         Full Name
@@ -56,14 +56,14 @@ function ProfileSettings() {
                     <input
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        className="settings-input"
+                        className="settings-input outline-1 rounded text-center"
                     />
 
                 </div>
 
 
 
-                <div>
+                <div className="gap-4 flex">
 
                     <label className="text-sm text-slate-400">
                         Email
@@ -72,14 +72,14 @@ function ProfileSettings() {
                     <input
                         value={user?.email || ""}
                         readOnly
-                        className="settings-input"
+                        className="settings-input outline-1 rounded text-center "
                     />
 
                 </div>
 
 
 
-                <div>
+                <div  className="gap-4 flex">
 
                     <label className="text-sm text-slate-400">
                         Role
@@ -88,14 +88,14 @@ function ProfileSettings() {
                     <input
                         value={user?.role || ""}
                         readOnly
-                        className="settings-input"
+                        className="settings-input outline-1 rounded text-center"
                     />
 
                 </div>
 
 
 
-                <div>
+                <div  className="gap-4 flex">
 
                     <label className="text-sm text-slate-400">
                         Department
@@ -104,7 +104,7 @@ function ProfileSettings() {
                     <input
                         value={form.department}
                         onChange={(e) => setForm({ ...form, department: e.target.value })}
-                        className="settings-input"
+                        className="settings-input outline-1 rounded text-center"
                     />
 
                 </div>

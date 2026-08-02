@@ -8,7 +8,9 @@ const Sidebar = () => {
     const { user } = useSelector((state) => state.auth);
 
     const role = user?.role?.toLowerCase();
-    const isAdminOrHr = ["admin", "hr"].includes(role);
+
+    const isAdmin = role === "admin";
+    const isHR = role === "hr";
 
     const handleLogout = async () => {
         await logout();
@@ -23,8 +25,15 @@ const Sidebar = () => {
                 </h2>
 
                 <nav className="flex flex-col gap-3">
+
                     <Link
-                        to="/dashboard"
+                        to={
+                            role === "admin"
+                                ? "/admin-dashboard"
+                                : role === "hr"
+                                    ? "/hr-dashboard"
+                                    : "/employee-dash"
+                        }
                         className="hover:bg-slate-800 px-4 py-2 rounded transition"
                     >
                         Dashboard
@@ -52,13 +61,22 @@ const Sidebar = () => {
                     </Link>
 
                     <Link
+                        to="/leave/requests"
+                        className="hover:bg-slate-800 px-4 py-2 rounded transition"
+                    >
+                        Leave Requests
+                    </Link>
+
+
+                    <Link
                         to="/settings"
                         className="hover:bg-slate-800 px-4 py-2 rounded transition"
                     >
                         Settings
                     </Link>
 
-                    {isAdminOrHr && (
+                    {/* Admin & HR */}
+                    {(isAdmin || isHR) && (
                         <Link
                             to="/reports"
                             className="hover:bg-slate-800 px-4 py-2 rounded transition"
@@ -67,23 +85,25 @@ const Sidebar = () => {
                         </Link>
                     )}
 
-                    {isAdminOrHr && (
-                        <Link
-                            to="/add-employee"
-                            className="hover:bg-slate-800 px-4 py-2 rounded transition"
-                        >
-                            Add Employee
-                        </Link>
+                    {/* Admin Only */}
+                    {isAdmin && (
+                        <>
+                            <Link
+                                to="/add-employee"
+                                className="hover:bg-slate-800 px-4 py-2 rounded transition"
+                            >
+                                Add Employee
+                            </Link>
+
+                            <button
+                                onClick={() => navigate("/add-user")}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition text-left"
+                            >
+                                + Add User Account
+                            </button>
+                        </>
                     )}
 
-                    {isAdminOrHr && (
-                        <button
-                            onClick={() => navigate("/add-user")}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition text-left"
-                        >
-                            + Add User Account
-                        </button>
-                    )}
                 </nav>
             </div>
 
@@ -102,7 +122,7 @@ const Sidebar = () => {
 
                 <button
                     onClick={handleLogout}
-                    className="w-full text-left bg-red-600/80 hover:bg-red-600 text-white px-4 py-2 rounded font-medium transition"
+                    className="w-full text-left bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium transition"
                 >
                     Logout
                 </button>
