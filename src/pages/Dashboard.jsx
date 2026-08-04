@@ -152,12 +152,19 @@ function Dashboard() {
                     </div>
 
                     <Box className="text-slate-900">
-                        <AnalyticsChart />
+                        <AnalyticsChart
+                            attendance={attendance}
+                            leaves={leaves}
+                        />
                     </Box>
 
                     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                         <Box className="text-slate-900">
-                            <RecentActivities />
+                            <RecentActivities
+                                employees={employees}
+                                attendance={attendance}
+                                leaves={leaves}
+                            />
                         </Box>
                         <Box className="text-slate-900">
                             <QuickActions />

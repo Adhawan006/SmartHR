@@ -53,14 +53,7 @@ const HRDashboard = () => {
               Welcome back, {user?.name || "HR Manager"}
             </p>
           </div>
-          <div className="mt-4 md:mt-0 flex gap-4">
-            <button
-              onClick={() => navigate("/add-employee")}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition"
-            >
-              + Add New Employee
-            </button>
-          </div>
+        
         </div>
 
         {/* Quick Search */}
